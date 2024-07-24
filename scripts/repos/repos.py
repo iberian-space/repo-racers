@@ -87,25 +87,30 @@ repos_filtered_list = [
     if re.match(pattern, repo.html_url)
 ]
 
-# Print the full list of repositories if the --full argument is provided
-if args.full:
+
+def display_table(repos_list: list[dict], title: str):
+    """
+    Display a table of repositories.
+
+    Args:
+        repos_list: A list of dictionaries containing repository information.
+        title: The title of the table.
+    """
     table = PrettyTable()
     table.field_names = ["Name", "URL", "Owner", "Size"]
     table.align = "l"  # Align columns to the left
-    repos_full_list = sorted(repos_full_list, key=lambda x: x["name"])
-    for repo in repos_full_list:
+    repos_list = sorted(repos_list, key=lambda x: x["name"])
+    for repo in repos_list:
         table.add_row([repo["name"], repo["url"], repo["owner"], repo["size"]])
-    print("\nFull list of repositories:")
+    print(f"\n{title}")
     print(colored(str(table), "green"))
+    print("\n")
+
+
+# Print the full list of repositories if the --full argument is provided
+if args.full:
+    display_table(repos_full_list, "Full list of repositories:")
 
 # Print the filtered list of repositories if the --filtered argument is provided
 if args.filtered:
-    table = PrettyTable()
-    table.field_names = ["Name", "URL", "Owner", "Size"]
-    table.align = "l"  # Align columns to the left
-    repos_filtered_list = sorted(repos_filtered_list, key=lambda x: x["name"])
-    for repo in repos_filtered_list:
-        table.add_row([repo["name"], repo["url"], repo["owner"], repo["size"]])
-    print("\nFiltered list of repositories:")
-    print(colored(str(table), "green"))
-    print("\n")
+    display_table(repos_filtered_list, "Filtered list of repositories:")
